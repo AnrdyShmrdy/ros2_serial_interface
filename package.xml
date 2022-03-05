@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>ros2_serial_interface</name>
+  <version>0.0.0</version>
+  <description>Ros2 Serial Interface</description>
+  <maintainer email="andy.ponce@outlook.com">andyp</maintainer>
+  <license>Apache 2.0</license>
+  
+  <!--TODO: Verify these 5 dependencies actually work as intended in this file. Also make sure they are valid through some testing-->
+  <!--Beginning of added dependencies:-->
+  <depend>rclpy</depend>
+  <depend>pynput</depend>
+  <depend>pyserial</depend>
+  <!--Don't know for sure if these exec_depends are necessary but I'm including them in case they are needed-->
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>serial</exec_depend>
+  <!--End of added dependencies-->
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>
