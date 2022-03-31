@@ -1,6 +1,6 @@
 from launch import LaunchDescription
 from launch_ros.actions import Node
-
+#if you run the launch file using ros2 launch after changing the parameter values, you need to rerun colcon build
 def generate_launch_description():
     return LaunchDescription([
         Node(
@@ -16,10 +16,11 @@ def generate_launch_description():
                 {'move_backward_lin_vel': -1.0},
                 {'turn_left_ang_vel': 1.0},
                 {'turn_right_ang_vel': -1.0},
-                {'move_forward_val': 1},
-                {'move_backward_val': 2},
-                {'turn_right_val': 3},
-                {'turn_left_val': 4},
+                {'move_forward_val': 'w'},
+                {'move_backward_val': 's'},
+                {'turn_right_val': 'd'},
+                {'turn_left_val': 'a'},
+                {'stop_val': 'x'}
             ]
         )
     ])
