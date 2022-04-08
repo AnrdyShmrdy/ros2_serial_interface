@@ -1,10 +1,9 @@
 //Make ten Motors
-int DriveMotor1[] = {7,3,5}; //index 0 = sleep, index 1 = direction, index 2 = steps
+int DriveMotor1[] = {2,4,3}; //index 0 = sleep, index 1 = direction, index 2 = steps
 int DriveMotor2[] = {17,13,15}; //index 0 = sleep, index 1 = direction, index 2 = steps
 int DriveMotor3[] = {27,23,25}; //index 0 = sleep, index 1 = direction, index 2 = steps
 int DriveMotor4[] = {37,33,25};
-//Andy: Commented out below line since this variable isn't being used
-//int DriveMotorDirectory[] = {DriveMotor1, DriveMotor2, DriveMotor3, DriveMotor4};
+
 int ArmMotor1[] = {47,43,45};
 int ArmMotor2[] = {57,53,55};
 int ArmMotor3[] = {67,63,65};
@@ -47,83 +46,128 @@ void setup() {
   
 }
 
-
 void Start(int motor[], bool enab, bool direc)
 {
   if(enab == 1){
-    digitalWrite(motor[0],HIGH); 
+    digitalWrite(motor[0],LOW); //For some reason, setting to LOW enables
     if(direc == 1)
     {
       digitalWrite(motor[1],LOW);
     }
-    else
+    if(direc == 0)
     {
       digitalWrite(motor[1],HIGH);
     }
 
     analogWrite(motor[2], 127);
   }
-  else{
-    Stop(motor);
-  }
 }
+
+
+//For some reason this modification to Start caused motor to start stuttering. 
+//void Start(int motor[], bool direc)
+//{
+//  digitalWrite(motor[0],LOW); 
+//  if(direc == 1)
+//  {
+//    digitalWrite(motor[1],LOW);
+//  }
+//  if(direc == 0)
+//  {
+//    digitalWrite(motor[1],HIGH);
+//  }
+//
+//  analogWrite(motor[2], 127);
+//}
 
 void Stop(int motor[])
 {
-  digitalWrite(motor[0],LOW);
+  digitalWrite(motor[0],HIGH);
+  digitalWrite(motor[1],LOW);
+  analogWrite(motor[2], 0);
 }
 
-void turnMotors(char ch)
+/* Movement Functions:
+ * Imagine a top-down view of the rover, with the front of it facing north
+ * My assumption is that the motors are numbered going from left-to-right and front-to-back
+ * If assumption is incorrect the values can easily be changed later
+ * #1=Front-left wheel motor
+ * #2=Front-right wheel motor
+ * #3=Back-left wheel motor
+ * #4=Back-right wheel motor
+*/
+
+void moveForward(){
+  Start(DriveMotor1, 1, 1);
+  Start(DriveMotor2, 1, 1);
+  Start(DriveMotor3, 1, 1);
+  Start(DriveMotor4, 1, 1);
+}
+void moveBackward(){
+  Start(DriveMotor1, 1, 0);
+  Start(DriveMotor2, 1, 0);
+  Start(DriveMotor3, 1, 0);
+  Start(DriveMotor4, 1, 0);
+}
+void turnLeft(){
+  Start(DriveMotor1, 1, 0);
+  Start(DriveMotor2, 1, 1);
+  Start(DriveMotor3, 1, 0);
+  Start(DriveMotor4, 1, 1);
+}
+void turnRight(){
+  Start(DriveMotor1, 1, 1);
+  Start(DriveMotor2, 1, 0);
+  Start(DriveMotor3, 1, 1);
+  Start(DriveMotor4, 1, 0);
+}
+void stopMoving(){
+  Stop(DriveMotor1);
+  Stop(DriveMotor2);
+  Stop(DriveMotor3);
+  Stop(DriveMotor4);
+}
+void runCommand(char command)
 {
-  /*
-  Imagine a top-down view of the rover, with the front of it facing north
-  My assumption is that the motors are numbered going from left-to-right and front-to-back
-  If assumption is incorrect the values can easily be changed later
-  #1=Front-left wheel motor
-  #2=Front-right wheel motor
-  #3=Back-left wheel motor
-  #4=Back-right wheel motor
-  */
-  if (ch == 'w') //move-forward
+
+  if (command == 'w') //move-forward
   {
     Serial.println("move-forward");
-    Start(DriveMotor1, 1, 1);
-    Start(DriveMotor2, 1, 1);
-    Start(DriveMotor3, 1, 1);
-    Start(DriveMotor4, 1, 1);
+    moveForward();
   }
-  else if (ch == 's') //move-backward
+  else if (command == 's') //move-backward
   {
     Serial.println("move-backward");
-    Start(DriveMotor1, 1, 0);
-    Start(DriveMotor2, 1, 0);
-    Start(DriveMotor3, 1, 0);
-    Start(DriveMotor4, 1, 0);
+    moveBackward();
   }
-  else if (ch == 'a') //turn-left
+  else if (command == 'a') //turn-left
   {
     Serial.println("turn-left");
-    Start(DriveMotor1, 1, 0);
-    Start(DriveMotor2, 1, 1);
-    Start(DriveMotor3, 1, 0);
-    Start(DriveMotor4, 1, 1);
+    turnLeft();
+
   }
-  else if (ch == 'd') //turn-right
+  else if (command == 'd') //turn-right
   {
     Serial.println("turn-right");
-    Start(DriveMotor1, 1, 1);
-    Start(DriveMotor2, 1, 0);
-    Start(DriveMotor3, 1, 1);
-    Start(DriveMotor4, 1, 0);
+    turnRight();
+
   }
-  else if (ch == 'x') //stop
+  else if (command == 'x') //stop
   {
     Serial.println("stop");
-    Stop(DriveMotor1);
-    Stop(DriveMotor2);
-    Stop(DriveMotor3);
-    Stop(DriveMotor4);
+    stopMoving();
   }
+}
+
+void motorTest(int motor[], int ms_delay){
+  digitalWrite(motor[0],LOW); //Motor is Enabled
+  digitalWrite(motor[1],HIGH); //Motor direction set HIGH
+  analogWrite(motor[2], 127); //Motor step amount set to 127
+  delay(ms_delay); //delay
+  digitalWrite(motor[0],HIGH); //Motor is Disabled
+  digitalWrite(motor[1],LOW); // Motor direction set LOW
+  analogWrite(motor[2], 0); //Motor step amount set to 0
+  delay(ms_delay); //delay
 }
 
 void loop() 
@@ -131,31 +175,9 @@ void loop()
   // put your main code here, to run repeatedly:
   // Serial Communication Goes Here
     if(Serial.available()){
-      //Andy: Commented out to test alternative way
-      // byte MotorCommand[2];
-      // Serial.readBytes(MotorCommand, 2); //Captures the first 2 bytes of data sent 
-      // // it will send 16 bits: 0000 0000 0000 0000
-      // // First Byte (8 bits) determines if the command is sent to Drive motors or Arm motors
-      // if(MotorCommand[0] == 0){
-      //   // BYTE 1: 0000 0000
-      //   //Drive Motor Command
-
-      //   for(int i = 0; i<4; i++){
-      //     bool enab = bitRead(MotorCommand[1], i);  //XXXX 0000
-      //     bool direc = bitRead(MotorCommand[1], i+4); //0000 XXXX
-      //     Start(DriveMotorDirectory[i], enab, direc);
-      //   }
-      // }
-      // else if(MotorCommand[0] == 128){
-      //   // BYTE 1: 1000 0000
-      //   //Arm Motor Command
-
-      // }
-      char ch = Serial.read();
-      turnMotors(ch);
+      //char command = Serial.read();
+      //runCommand(command);
     }
-    //Start(DriveMotor1,1);
-    //delay(500);
-    //Stop(DriveMotor1);
+    motorTest(DriverMotor1, 2000);
   
 }
