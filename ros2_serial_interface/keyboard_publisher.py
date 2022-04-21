@@ -1,45 +1,43 @@
-from time import sleep
-from xmlrpc.client import Boolean
 import rclpy
-from pynput import keyboard
 from rclpy.node import Node
-from pynput.keyboard import Listener
-from pynput.keyboard import Key
-from std_msgs.msg import String
+from pynput.keyboard import Key, Listener, KeyCode
 # Handle Twist messages, linear and angular velocity
 from geometry_msgs.msg import Twist
+
 def run_publisher(node):
     while (node.isFinished == False):
         def onpress(key):
             msg = Twist()
-            if key == Key.up:
-                #msg.data = 'Up key pressed'
-                msg.linear.x = 1.0
-                node.publisher_.publish(msg)
-                return False
-            elif key == Key.down:
-                #msg.data = 'Down key pressed'
-                msg.linear.x = -1.0
-                node.publisher_.publish(msg)
-                return False
-            elif key == Key.left:
-                #msg.data = 'Left key pressed'
-                msg.angular.z = 1.0
-                node.publisher_.publish(msg)
-                return False
-            elif key == Key.right:
-                #msg.data = 'Right key pressed'
-                msg.angular.z = -1.0
-                node.publisher_.publish(msg)
-                return False
+            if isinstance(key, KeyCode): #lets us know if we can safely use key.char
+                if key.char == 'w':
+                    #msg.data = 'Up key pressed'
+                    msg.linear.x = 1.0
+                    node.publisher_.publish(msg)
+                    return False
+                elif key.char == 's':
+                    #msg.data = 'Down key pressed'
+                    msg.linear.x = -1.0
+                    node.publisher_.publish(msg)
+                    return False
+                elif key.char == 'a':
+                    #msg.data = 'Left key pressed'
+                    msg.angular.z = 1.0
+                    node.publisher_.publish(msg)
+                    return False
+                elif key.char == 'd':
+                    #msg.data = 'Right key pressed'
+                    msg.angular.z = -1.0
+                    node.publisher_.publish(msg)
+                    return False
             elif key == Key.esc:
             # Stop listener
                 node.isFinished = True
                 return False
         def onrelease(key):
-            if key in {Key.up, Key.down, Key.left, Key.right}:
-                node.publisher_.publish(Twist()) #Publishes a Twist message with values of 0. This indicates stopping
-                return False
+            if isinstance(key, KeyCode): #lets us know if we can safely use key.char
+                if key.char in {'w', 's', 'a', 'd'}:
+                    node.publisher_.publish(Twist()) #Publishes a Twist message with values of 0. This indicates stopping
+                    return False
             elif key == Key.esc:
             # Stop listener
                 node.isFinished = True

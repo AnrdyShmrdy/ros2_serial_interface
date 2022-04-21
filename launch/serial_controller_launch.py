@@ -16,11 +16,11 @@ def generate_launch_description():
                 {'move_backward_lin_vel': -1.0},
                 {'turn_left_ang_vel': 1.0},
                 {'turn_right_ang_vel': -1.0},
-                {'move_forward_val': 'w'},
-                {'move_backward_val': 's'},
-                {'turn_right_val': 'd'},
-                {'turn_left_val': 'a'},
-                {'stop_val': 'x'}
+                {'move_forward_cmd': 'w'},
+                {'move_backward_cmd': 's'},
+                {'turn_right_cmd': 'd'},
+                {'turn_left_cmd': 'a'},
+                {'stop_cmd': 'x'}
             ]
         )
     ])
