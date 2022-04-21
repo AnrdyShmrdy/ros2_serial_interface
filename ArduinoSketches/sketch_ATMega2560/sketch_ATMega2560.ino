@@ -15,7 +15,9 @@ int ArmMotor6[] = {97,93,95};
 
 void setup() {
   // put your setup code here, to run once:
-
+  //Up the speed of the internal timer
+  TCCR1A = 0b00000011; // 10bit
+  TCCR1B = 0b00001001; // x1 fast pwm
   //For loop to determine all Motor Pin Connections
   for(int i = 0; i<3; i++)
   {
@@ -62,24 +64,6 @@ void Start(int motor[], bool enab, bool direc)
     analogWrite(motor[2], 127);
   }
 }
-
-
-//For some reason this modification to Start caused motor to start stuttering. 
-//void Start(int motor[], bool direc)
-//{
-//  digitalWrite(motor[0],LOW); 
-//  if(direc == 1)
-//  {
-//    digitalWrite(motor[1],LOW);
-//  }
-//  if(direc == 0)
-//  {
-//    digitalWrite(motor[1],HIGH);
-//  }
-//
-//  analogWrite(motor[2], 127);
-//}
-
 void Stop(int motor[])
 {
   digitalWrite(motor[0],HIGH);
@@ -175,9 +159,9 @@ void loop()
   // put your main code here, to run repeatedly:
   // Serial Communication Goes Here
     if(Serial.available()){
-      //char command = Serial.read();
-      //runCommand(command);
+      char command = Serial.read();
+      runCommand(command);
     }
-    motorTest(DriverMotor1, 2000);
+    //motorTest(DriveMotor1, 2000);
   
 }

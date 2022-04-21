@@ -1,6 +1,4 @@
 # Node to publish a string topic
-from functools import cmp_to_key
-from numpy import uint8
 import rclpy
 from rclpy.node import Node
 import serial
