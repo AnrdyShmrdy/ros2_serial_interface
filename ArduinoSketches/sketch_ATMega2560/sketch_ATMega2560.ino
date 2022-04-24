@@ -1,15 +1,17 @@
 //Make ten Motors
-int DriveMotor1[] = {2,4,3}; //index 0 = sleep, index 1 = direction, index 2 = steps
-int DriveMotor2[] = {17,13,15}; //index 0 = sleep, index 1 = direction, index 2 = steps
-int DriveMotor3[] = {27,23,25}; //index 0 = sleep, index 1 = direction, index 2 = steps
-int DriveMotor4[] = {37,33,25};
+//index 0 = Dir, index 1 = Step, index 2 = Enable
 
-int ArmMotor1[] = {47,43,45};
-int ArmMotor2[] = {57,53,55};
-int ArmMotor3[] = {67,63,65};
-int ArmMotor4[] = {77,73,75};
-int ArmMotor5[] = {87,83,85};
-int ArmMotor6[] = {97,93,95};
+int DriveMotor1[] = {50,11,15};  // back left wheel
+int DriveMotor2[] = {46,9,17};   // front left wheel
+int DriveMotor3[] = {40,6,66};  //back right wheel
+int DriveMotor4[] = {36,4,69};   //front right wheel
+
+int ArmMotor1[] = {52,12,14};
+int ArmMotor2[] = {42,8,18};
+int ArmMotor3[] = {44,7,19};
+int ArmMotor4[] = {48,10,16};
+int ArmMotor5[] = {38,5,67};
+int ArmMotor6[] = {34,3,69};
 
 //Serial: Input data comes from USB CABLE; Read Serial for pulse calls
 
@@ -51,24 +53,42 @@ void setup() {
 void Start(int motor[], bool enab, bool direc)
 {
   if(enab == 1){
-    digitalWrite(motor[0],LOW); //For some reason, setting to LOW enables
+    digitalWrite(motor[2],LOW); //For some reason, setting to LOW enables
     if(direc == 1)
     {
-      digitalWrite(motor[1],LOW);
+      digitalWrite(motor[0],LOW);
     }
     if(direc == 0)
     {
-      digitalWrite(motor[1],HIGH);
+      digitalWrite(motor[0],HIGH);
     }
 
-    analogWrite(motor[2], 127);
+    analogWrite(motor[1], 127);
   }
 }
+
+
+//For some reason this modification to Start caused motor to start stuttering. 
+//void Start(int motor[], bool direc)
+//{
+//  digitalWrite(motor[0],LOW); 
+//  if(direc == 1)
+//  {
+//    digitalWrite(motor[0],LOW);
+//  }
+//  if(direc == 0)
+//  {
+//    digitalWrite(motor[0],HIGH);
+//  }
+//
+//  analogWrite(motor[2], 127);
+//}
+
 void Stop(int motor[])
 {
-  digitalWrite(motor[0],HIGH);
-  digitalWrite(motor[1],LOW);
-  analogWrite(motor[2], 0);
+  digitalWrite(motor[2],HIGH);
+  digitalWrite(motor[0],LOW);
+  analogWrite(motor[1], 0);
 }
 
 /* Movement Functions:
@@ -79,37 +99,43 @@ void Stop(int motor[])
  * #2=Front-right wheel motor
  * #3=Back-left wheel motor
  * #4=Back-right wheel motor
+ * 
+ * NEW ASSIGNMENT OF MOTORS:
+ * #1= Back-left wheel
+ * #2= Front-left wheel
+ * #3= Back-right wheel
+ * #4= Front-right wheel
 */
 
 void moveForward(){
-  Start(DriveMotor1, 1, 1);
   Start(DriveMotor2, 1, 1);
-  Start(DriveMotor3, 1, 1);
   Start(DriveMotor4, 1, 1);
+  Start(DriveMotor1, 1, 1);
+  Start(DriveMotor3, 1, 1);
 }
 void moveBackward(){
-  Start(DriveMotor1, 1, 0);
   Start(DriveMotor2, 1, 0);
-  Start(DriveMotor3, 1, 0);
   Start(DriveMotor4, 1, 0);
+  Start(DriveMotor1, 1, 0);
+  Start(DriveMotor3, 1, 0);
 }
 void turnLeft(){
-  Start(DriveMotor1, 1, 0);
-  Start(DriveMotor2, 1, 1);
-  Start(DriveMotor3, 1, 0);
+  Start(DriveMotor2, 1, 0);
   Start(DriveMotor4, 1, 1);
+  Start(DriveMotor1, 1, 0);
+  Start(DriveMotor3, 1, 1);
 }
 void turnRight(){
-  Start(DriveMotor1, 1, 1);
-  Start(DriveMotor2, 1, 0);
-  Start(DriveMotor3, 1, 1);
+  Start(DriveMotor2, 1, 1);
   Start(DriveMotor4, 1, 0);
+  Start(DriveMotor1, 1, 1);
+  Start(DriveMotor3, 1, 0);
 }
 void stopMoving(){
-  Stop(DriveMotor1);
   Stop(DriveMotor2);
-  Stop(DriveMotor3);
   Stop(DriveMotor4);
+  Stop(DriveMotor1);
+  Stop(DriveMotor3);
 }
 void runCommand(char command)
 {
@@ -144,13 +170,13 @@ void runCommand(char command)
 }
 
 void motorTest(int motor[], int ms_delay){
-  digitalWrite(motor[0],LOW); //Motor is Enabled
-  digitalWrite(motor[1],HIGH); //Motor direction set HIGH
-  analogWrite(motor[2], 127); //Motor step amount set to 127
+  digitalWrite(motor[2],LOW); //Motor is Enabled
+  digitalWrite(motor[0],HIGH); //Motor direction set HIGH
+  analogWrite(motor[1], 127); //Motor step amount set to 127
   delay(ms_delay); //delay
-  digitalWrite(motor[0],HIGH); //Motor is Disabled
-  digitalWrite(motor[1],LOW); // Motor direction set LOW
-  analogWrite(motor[2], 0); //Motor step amount set to 0
+  digitalWrite(motor[2],HIGH); //Motor is Disabled
+  digitalWrite(motor[0],LOW); // Motor direction set LOW
+  analogWrite(motor[1], 0); //Motor step amount set to 0
   delay(ms_delay); //delay
 }
 
@@ -159,9 +185,9 @@ void loop()
   // put your main code here, to run repeatedly:
   // Serial Communication Goes Here
     if(Serial.available()){
-      char command = Serial.read();
-      runCommand(command);
+      //char command = Serial.read();
+      //runCommand(command);
     }
-    //motorTest(DriveMotor1, 2000);
+    motorTest(DriveMotor1, 2000);
   
 }
