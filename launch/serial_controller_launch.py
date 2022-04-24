@@ -10,7 +10,7 @@ def generate_launch_description():
             output='screen',
             emulate_tty=True,
             parameters=[
-                {'device': '/dev/ttyACM0'},
+                {'device': '/dev/ttyS0'},
                 {'wheel_instructions_topic': 'wheel_instructions_topic'},
                 {'move_forward_lin_vel': 1.0},
                 {'move_backward_lin_vel': -1.0},
