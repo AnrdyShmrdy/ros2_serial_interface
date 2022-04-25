@@ -10,17 +10,18 @@ class SerialController(Node):
 		super().__init__('serial_controller')
 		#TODO: Try and see if it's possible to use parameters without declaration of default value
 		#Default Value declarations of ros2 params:
-		self.declare_parameter('device', '/dev/ttyACM0')
+		#self.declare_parameter('device', '/dev/ttyACM0') #For Usb
+		self.declare_parameter('device', '/dev/ttyAMA0') #For UART
 		self.declare_parameter('wheel_instructions_topic', 'wheel_instructions_topic')
 		self.declare_parameter('move_forward_lin_vel', 1.0)
 		self.declare_parameter('move_backward_lin_vel', -1.0)
 		self.declare_parameter('turn_left_ang_vel', 1.0)
 		self.declare_parameter('turn_right_ang_vel', -1.0)
-		self.declare_parameter('move_forward_cmd', 'w')
-		self.declare_parameter('move_backward_cmd', 's')
-		self.declare_parameter('turn_right_cmd', 'd')
-		self.declare_parameter('turn_left_cmd', 'a')
-		self.declare_parameter('stop_cmd', 'x')
+		self.declare_parameter('move_forward_cmd', 'w,')
+		self.declare_parameter('move_backward_cmd', 's,')
+		self.declare_parameter('turn_right_cmd', 'd,')
+		self.declare_parameter('turn_left_cmd', 'a,')
+		self.declare_parameter('stop_cmd', 'x,')
 		self.wheel_topic_name = self.get_parameter('wheel_instructions_topic').get_parameter_value().string_value
 		self.device_name = self.get_parameter('device').get_parameter_value().string_value
 		self.forward_vel = float(self.get_parameter('move_forward_lin_vel').get_parameter_value().double_value)
