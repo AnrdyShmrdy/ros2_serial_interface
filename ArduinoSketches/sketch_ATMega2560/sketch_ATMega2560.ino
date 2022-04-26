@@ -1,22 +1,36 @@
+//MAKE SURE YOU TURN BOTH ARDUINO AND PI ON AT THE SAME TIME!
+//IF YOU RESTART THE PI, RESTART THE ARDUINO!
+//Reason why is because Pi sends about 37 bytes to UART pins during boot time
+//This program delays setup for 11 seconds to prevent those bytes from being recieved
+
+
 //Make ten Motors
 //index 0 = Dir, index 1 = Step, index 2 = Enable
 
-int DriveMotor1[] = {50,11,15};  // back left wheel
-int DriveMotor2[] = {46,9,17};   // front left wheel
+int DriveMotor1[] = {52,12,14};  // back left wheel
+int DriveMotor2[] = {50,11,15};  // front left wheel
 int DriveMotor3[] = {40,6,66};  //back right wheel
 int DriveMotor4[] = {36,4,69};   //front right wheel
 
-int ArmMotor1[] = {52,12,14};
+int ArmMotor1[] =  {46,9,17};
 int ArmMotor2[] = {42,8,18};
 int ArmMotor3[] = {44,7,19};
 int ArmMotor4[] = {48,10,16};
 int ArmMotor5[] = {38,5,67};
 int ArmMotor6[] = {34,3,69};
 
+const char move_forward = 'w';
+const char move_backward = 's';
+const char turn_left = 'a';
+const char turn_right = 'd';
+const char stop_move = 'x';
+
 //Serial: Input data comes from USB CABLE; Read Serial for pulse calls
 
 void setup() {
   // put your setup code here, to run once:
+  //Delay to avoid recieving the approximately 37 bytes the pi sents to the UART pins during boot
+  delay(12000); 
   //Up the speed of the internal timer
   TCCR1A = 0b00000011; // 10bit
   TCCR1B = 0b00001001; // x1 fast pwm
@@ -34,16 +48,16 @@ void setup() {
   pinMode(ArmMotor5[i],OUTPUT);
   pinMode(ArmMotor6[i],OUTPUT);
   //Set all Motors to No Output
-  digitalWrite(DriveMotor1[i],LOW);
-  digitalWrite(DriveMotor2[i],LOW);
-  digitalWrite(DriveMotor3[i],LOW);
-  digitalWrite(DriveMotor4[i],LOW);
-  digitalWrite(ArmMotor1[i],LOW);
-  digitalWrite(ArmMotor2[i],LOW);
-  digitalWrite(ArmMotor3[i],LOW);
-  digitalWrite(ArmMotor4[i],LOW);
-  digitalWrite(ArmMotor5[i],LOW);
-  digitalWrite(ArmMotor6[i],LOW);
+  digitalWrite(DriveMotor1[i],HIGH);
+  digitalWrite(DriveMotor2[i],HIGH);
+  digitalWrite(DriveMotor3[i],HIGH);
+  digitalWrite(DriveMotor4[i],HIGH);
+  digitalWrite(ArmMotor1[i],HIGH);
+  digitalWrite(ArmMotor2[i],HIGH);
+  digitalWrite(ArmMotor3[i],HIGH);
+  digitalWrite(ArmMotor4[i],HIGH);
+  digitalWrite(ArmMotor5[i],HIGH);
+  digitalWrite(ArmMotor6[i],HIGH);
   }
   //Start up Serial Communication
   Serial.begin(9600);
@@ -140,31 +154,31 @@ void stopMoving(){
 void runCommand(char command)
 {
 
-  if (command == 'w') //move-forward
+  if (command == move_forward) //move-forward
   {
     Serial.println("move-forward");
     moveForward();
   }
-  else if (command == 's') //move-backward
+  else if (command == move_backward) //move-backward
   {
     Serial.println("move-backward");
     moveBackward();
   }
-  else if (command == 'a') //turn-left
+  else if (command == turn_left) //turn-left
   {
     Serial.println("turn-left");
     turnLeft();
 
   }
-  else if (command == 'd') //turn-right
+  else if (command == turn_right) //turn-right
   {
     Serial.println("turn-right");
     turnRight();
 
   }
-  else if (command == 'x') //stop
+  else if (command == stop_move) //stop-move
   {
-    Serial.println("stop");
+    Serial.println("stop-move");
     stopMoving();
   }
 }
@@ -185,9 +199,9 @@ void loop()
   // put your main code here, to run repeatedly:
   // Serial Communication Goes Here
     if(Serial.available()){
-      //char command = Serial.read();
-      //runCommand(command);
+      char command = Serial.read();
+      runCommand(command);
     }
-    motorTest(DriveMotor1, 2000);
+    //motorTest(DriveMotor1, 2000);
   
 }
