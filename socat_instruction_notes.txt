@@ -1,0 +1,15 @@
+Project this concerns: Testing stuff inside vscode_docker_workspace repo docker container. Work being done inside docker container with foxy and ros2_serial_interface package
+Working folder in container: /dev_ws
+
+THIS TEST WORKS!!!
+
+First Terminal: nc -l 60001
+
+Second Terminal: 
+	First command: socat pty,link=/dev/ttyAMA0,raw tcp:127.0.0.1:60001&
+	The first command sets up /dev/ttyAMA0 to forward data to 127.0.0.1:60001. This command also runs in the background
+	
+	Second command: /bin/python3 /dev_ws/src/ros2_serial_interface/ros2_serial_interface/serial_test.py
+	Second command sends "test" to the device /dev/ttyAMA0. The moment it arrives to /dev/ttyAMA0, socat forwards that to 127.0.0.1:60001
+	
+Sidenote: #maybe make a try-except-finally for different serial connections. Like if ttyAMA0 fails, try ttyS0, try COM1, etc
