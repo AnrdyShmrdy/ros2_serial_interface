@@ -1,15 +1,46 @@
-Project this concerns: Testing stuff inside vscode_docker_workspace repo docker container. Work being done inside docker container with foxy and ros2_serial_interface package
+Project this concerns: 
+Testing stuff inside vscode_docker_workspace repo docker container. 
+Work being done inside docker container with foxy and ros2_serial_interface package
 Working folder in container: /dev_ws
 
-THIS TEST WORKS!!!
+Testing with serial_test.py:
 
-First Terminal: nc -l 60001
+First open two terminals and run "source install/setup.bash" in each of them
+
+First Terminal: 
+	First command: nc -l 60001
+		- Sets up a netcat server to listen to messages on 127.0.0.1:60001
+
+Second Terminal: 
+	
+	First command: socat pty,link=/dev/ttyAMA0,raw tcp:127.0.0.1:60001&
+	
+		- This command sets up /dev/ttyAMA0 to forward data to 127.0.0.1:60001 
+		- The & allows this to run as a background task
+	
+	Second command: /bin/python3 /dev_ws/src/ros2_serial_interface/ros2_serial_interface/serial_test.py
+	
+		- Runs serial_test.py, which sends "test" to the device /dev/ttyAMA0.
+		- The moment it arrives to /dev/ttyAMA0, it is forwarded to 127.0.0.1:60001
+	
+Sidenote: #maybe make a try-except-finally for different serial connections. Like if ttyAMA0 fails, try ttyS0, try COM1, etc
+
+Testing with publisher_test.py:
+
+First open three terminals and run "source install/setup.bash" in each of them
+
+First Terminal: 
+	First command: nc -l 60001
+		- Sets up a netcat server to listen to messages on 127.0.0.1:60001
 
 Second Terminal: 
 	First command: socat pty,link=/dev/ttyAMA0,raw tcp:127.0.0.1:60001&
-	The first command sets up /dev/ttyAMA0 to forward data to 127.0.0.1:60001. This command also runs in the background
-	
-	Second command: /bin/python3 /dev_ws/src/ros2_serial_interface/ros2_serial_interface/serial_test.py
-	Second command sends "test" to the device /dev/ttyAMA0. The moment it arrives to /dev/ttyAMA0, socat forwards that to 127.0.0.1:60001
-	
-Sidenote: #maybe make a try-except-finally for different serial connections. Like if ttyAMA0 fails, try ttyS0, try COM1, etc
+		- This command sets up /dev/ttyAMA0 to forward data to 127.0.0.1:60001 
+		- The & allows this to run as a background task
+	Second command: ros2 run ros2_serial_interface serial_controller 
+		- Runs the serial_controller.py program, which listens to various ROS2 topics, like the wheel_instructions
+Third Terminal: 
+	First command: /bin/python3 /dev_ws/src/ros2_serial_interface/ros2_serial_interface/publisher_test.py
+		- Runs publisher_test.py, which publishes various Twist messages to the wheel_instructions_topic
+		- The serial_controller program reads the published messages and sends the appropriate response via serial to /dev/ttyAMA0
+		- The moment it arrives to /dev/ttyAMA0, it is forwarded to 127.0.0.1:60001
