@@ -7,6 +7,12 @@ const int IN2 = 6;
 const int IN3 = 5;
 const int IN4 = 4;
 const int ENB = 3;
+const char move_forward = 'w';
+const char move_backward = 's';
+const char turn_left = 'a';
+const char turn_right = 'd';
+const char stop = 'x';
+
 const int pwm_val = 140;
 int DCMotor1[] = {IN1,IN2, ENA};
 int DCMotor2[] = {IN3,IN4, ENB};  
@@ -57,29 +63,29 @@ void stopMoving(){
 void runCommand(char command)
 {
 
-  if (command == 'w') //move-forward
+  if (command == move_forward) //move-forward
   {
     Serial.println("move-forward");
     moveForward();
   }
-  else if (command == 's') //move-backward
+  else if (command == move_backward) //move-backward
   {
     Serial.println("move-backward");
     moveBackward();
   }
-  else if (command == 'a') //turn-left
+  else if (command == turn_left) //turn-left
   {
     Serial.println("turn-left");
     turnLeft();
 
   }
-  else if (command == 'd') //turn-right
+  else if (command == turn_right) //turn-right
   {
     Serial.println("turn-right");
     turnRight();
 
   }
-  else if (command == 'x') //stop
+  else if (command == stop) //stop
   {
     Serial.println("stop");
     stopMoving();
@@ -90,9 +96,10 @@ void loop()
 {
   // put your main code here, to run repeatedly:
   // Serial Communication Goes Here
+  char buffer[1];  
     if(Serial.available()){
-      char command = Serial.read();
-      runCommand(command);
+      Serial.readBytesUntil(',', buffer,1);
+      runCommand(buffer[0]);
     }
     //motorTest(DriveMotor1, 2000);
   
