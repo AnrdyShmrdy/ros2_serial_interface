@@ -44,3 +44,45 @@ Third Terminal:
 		- Runs publisher_test.py, which publishes various Twist messages to the wheel_instructions_topic
 		- The serial_controller program reads the published messages and sends the appropriate response via serial to /dev/ttyAMA0
 		- The moment it arrives to /dev/ttyAMA0, it is forwarded to 127.0.0.1:60001
+
+
+Testing with serial_device1.py, serial_device2.py, publisher_test.py, and socat:
+
+This test essentially sets up two mock devices:
+
+serial_device1:
+	- This is the device running the serial_controller, which subscribes to the wheel_instructions topic
+	- This device transmits data to a serial port called '/dev/ttyS0' 
+	- The data sent to 'dev/ttyS0' gets forwarded to '/dev/ttyS1' using the socat utility
+	- This device recieves data from a serial port called '/dev/ttyS3'
+	- The data recieved by '/dev/ttyS3' was forwarded from another serial port called '/dev/ttyS2'
+	- Essentially, 'dev/ttyS0' sends data to '/dev/ttyS3' and '/dev/ttyS1' recieves data from '/dev/ttyS2'
+serial_device2:
+	- This is the device that is communicating with serial_device1
+	- This device transmits data to a serial port called '/dev/ttyS2' 
+	- The data sent to 'dev/ttyS2' gets forwarded to '/dev/ttyS3' using the socat utility
+	- This device recieves data from a serial port called '/dev/ttyS1'
+	- The data recieved by '/dev/ttyS1' was forwarded from another serial port called '/dev/ttyS0'
+	- Essentially, 'dev/ttyS2' sends data to '/dev/ttyS1' and '/dev/ttyS3' recieves data from '/dev/ttyS0'
+
+First open four terminals and run "source install/setup.bash" in each of them
+
+First Terminal:
+	First Command: socat -d -d pty,link=/dev/ttyS0,raw,echo=0 pty,link=/dev/ttyS1,raw,echo=0 &
+		- This command sets up /dev/ttyS0 to forward data to /dev/ttyS1
+		- The & allows this to run as a background task
+	Second Command: socat -d -d pty,link=/dev/ttyS2,raw,echo=0 pty,link=/dev/ttyS3,raw,echo=0 &
+		- This command sets up /dev/ttyS2 to forward data to /dev/ttyS3 
+		- The & allows this to run as a background task
+Second Terminal:
+	First Command: /bin/python3 /dev_ws/src/ros2_serial_interface/ros2_serial_interface/serial_device1.py
+		- Runs serial_device1.py
+		- Like serial_controller.py, this sends serial data based on data published to wheel_instructions
+		- Unlike serial_controller.py, this program sends serial data to /dev/ttyS0 and recieves serial data from /dev/ttyS3
+Third Terminal:
+	First Command: /bin/python3 /dev_ws/src/ros2_serial_interface/ros2_serial_interface/serial_device2.py
+		- Runs serial_device2.py, which sets up a mock serial device to be used with serial_device1.py
+		- The mock device recieves serial data from /dev/ttyS1 and sends serial data to /dev/ttyS2
+Fourth Terminal:
+	First command: /bin/python3 /dev_ws/src/ros2_serial_interface/ros2_serial_interface/publisher_test.py
+		- Runs publisher_test.py, which publishes data to the wheel_instructions_topic
