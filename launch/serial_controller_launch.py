@@ -5,8 +5,8 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package='ros2_serial_interface',
-            executable='serial_controller',
-            name='serial_controller_node',
+            executable='serial_server',
+            name='serial_server_node',
             output='screen',
             emulate_tty=True,
             parameters=[

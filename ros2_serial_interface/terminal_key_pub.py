@@ -33,6 +33,7 @@
 
 # NOTE: Above copyright notice applies to portions of this code which originate from https://github.com/ros2/teleop_twist_keyboard
 
+#This keyboard publisher gets input directly from the linux/windows terminal
 import sys
 
 import geometry_msgs.msg

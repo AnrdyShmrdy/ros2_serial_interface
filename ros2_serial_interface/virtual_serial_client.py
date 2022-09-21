@@ -1,7 +1,7 @@
 from time import sleep
 import serial
 
-class SerialReader():
+class VirtualSerialClient():
 	def __init__(self):
 		self.transmitting_device = '/dev/ttyS2' #device we are trasmitting messages to
 		self.recieving_device = '/dev/ttyS1' #device we are recieving messages from
@@ -40,9 +40,9 @@ class SerialReader():
 			self.send_cmd("I have recieved x")
 
 def main(args=None):
-	serial_reader = SerialReader()
+	virtual_serial_client = VirtualSerialClient()
 	while True:
-		serial_reader.recieve_cmd()
+		virtual_serial_client.recieve_cmd()
 
 if __name__ == '__main__':
 	main()
