@@ -9,56 +9,55 @@ from geometry_msgs.msg import Twist
 class VirtualSerialServer(Node):
 	def __init__(self):
 		super().__init__('virtual_serial_server')
-		#TODO: Try and see if it's possible to use parameters without declaration of default value
 		#Default Value declarations of ros2 params:
-		self.declare_parameter('transmitting_device', '/dev/ttyS0') #device we are trasmitting messages to
-		self.declare_parameter('recieving_device', '/dev/ttyS3') #device we are recieving messages from
-		self.declare_parameter('wheel_instructions_topic', 'wheel_instructions_topic')
-		self.declare_parameter('move_forward_lin_vel', 1.0)
-		self.declare_parameter('move_backward_lin_vel', -1.0)
-		self.declare_parameter('turn_left_ang_vel', 1.0)
-		self.declare_parameter('turn_right_ang_vel', -1.0)
-		self.declare_parameter('move_forward_cmd', 'w')
-		self.declare_parameter('move_backward_cmd', 's')
-		self.declare_parameter('turn_right_cmd', 'd')
-		self.declare_parameter('turn_left_cmd', 'a')
-		self.declare_parameter('stop_cmd', 'x')
-		self.wheel_topic_name = self.get_parameter('wheel_instructions_topic').get_parameter_value().string_value
-		self.recieving_device = self.get_parameter('recieving_device').get_parameter_value().string_value
-		self.transmitting_device = self.get_parameter('transmitting_device').get_parameter_value().string_value
-		self.forward_vel = float(self.get_parameter('move_forward_lin_vel').get_parameter_value().double_value)
-		self.backward_vel = float(self.get_parameter('move_backward_lin_vel').get_parameter_value().double_value)
-		self.turn_left_vel = float(self.get_parameter('turn_left_ang_vel').get_parameter_value().double_value)
-		self.turn_right_vel = float(self.get_parameter('turn_right_ang_vel').get_parameter_value().double_value)
-		self.move_forward_cmd = self.get_parameter('move_forward_cmd').get_parameter_value().string_value
-		self.move_backward_cmd = self.get_parameter('move_backward_cmd').get_parameter_value().string_value
-		self.turn_left_cmd = self.get_parameter('turn_left_cmd').get_parameter_value().string_value
-		self.turn_right_cmd = self.get_parameter('turn_right_cmd').get_parameter_value().string_value
-		self.stop_cmd = self.get_parameter('stop_cmd').get_parameter_value().string_value
-		print(self.transmitting_device)
-		print(self.recieving_device)
-		print(self.wheel_topic_name)
-		print(self.forward_vel)
-		print(self.backward_vel)
-		print(self.turn_left_vel)
-		print(self.turn_right_vel)
-		print(self.move_forward_cmd)
-		print(self.move_backward_cmd)
-		print(self.turn_left_cmd)
-		print(self.turn_right_cmd)
-		print(self.stop_cmd)
-		self.serial_send = serial.Serial(self.transmitting_device,
+		self.declare_parameters(
+		namespace='',
+		parameters=[
+			('transmitting_device', '/dev/ttyS0'), #device we are trasmitting messages to
+		    ('recieving_device', '/dev/ttyS3'), #device we are recieving messages from
+		    ('wheel_instructions_topic', 'wheel_instructions_topic'),
+		    ('move_forward_lin_vel', 1.0),
+		    ('move_backward_lin_vel', -1.0),
+		    ('turn_left_ang_vel', 1.0),
+		    ('turn_right_ang_vel', -1.0),
+		    ('move_forward_cmd', 'w'),
+		    ('move_backward_cmd', 's'),
+		    ('turn_right_cmd', 'd'),
+		    ('turn_left_cmd', 'a'),
+		    ('stop_cmd', 'x'),
+		]
+		)
+		self.forward_vel = self.get_param_float('move_forward_lin_vel')
+		self.backward_vel = self.get_param_float('move_backward_lin_vel')
+		self.turn_left_vel = self.get_param_float('turn_left_ang_vel')
+		self.turn_right_vel = self.get_param_float('turn_right_ang_vel')
+		self.move_forward_cmd = self.get_param_str('move_forward_cmd')
+		self.move_backward_cmd = self.get_param_str('move_backward_cmd')
+		self.turn_left_cmd = self.get_param_str('turn_left_cmd')
+		self.turn_right_cmd = self.get_param_str('turn_right_cmd')
+		self.stop_cmd = self.get_param_str('stop_cmd')
+		self.serial_send = serial.Serial(self.get_param_str('transmitting_device'),
 				9600, #Note: Baud Rate must be the same in the arduino program, otherwise signal is not recieved!
 				timeout=.1)
-		self.serial_recieve = serial.Serial(self.recieving_device,
-						9600, #Note: Baud Rate must be the same in the arduino program, otherwise signal is not recieved!
-						timeout=.1)
+		self.serial_recieve = serial.Serial(self.get_param_str('recieving_device'),
+				9600, #Note: Baud Rate must be the same in the arduino program, otherwise signal is not recieved!
+				timeout=.1)
 		
 		self.subscriber = self.create_subscription(Twist, 
-                                              self.wheel_topic_name, 
+                                              self.get_param_str('wheel_instructions_topic'), 
                                               self.serial_listener_callback, 
                                               10)
 		self.subscriber # prevent unused variable warning
+	def get_param_float(self, name):
+		try:
+			return float(self.get_parameter(name).get_parameter_value().double_value)
+		except:
+			pass
+	def get_param_str(self, name):
+		try:
+			return self.get_parameter(name).get_parameter_value().string_value
+		except:
+			pass
 	def send_cmd(self, cmd):
 		print("Sending: " + cmd)
 		self.serial_send.write(bytes(cmd,'utf-8'))
