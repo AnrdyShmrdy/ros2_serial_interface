@@ -20,23 +20,18 @@ class VirtualSerialClient():
 		self.line = self.serial_recieve.readline().decode('utf-8').rstrip()
 		if(self.line == "w"):
 			print("recieved the letter w")
-			print("sending response...")
 			self.send_cmd("I have recieved w")
 		elif(self.line == "a"):
 			print("recieved the letter a")
-			print("sending response...")
 			self.send_cmd("I have recieved a")
 		elif(self.line == "s"):
 			print("recieved the letter s")
-			print("sending response...")
 			self.send_cmd("I have recieved s")
 		elif(self.line == "d"):
 			print("recieved the letter d")
-			print("sending response...")
 			self.send_cmd("I have recieved d")
 		elif(self.line == "x"):
 			print("recieved the letter x")
-			print("sending response...")
 			self.send_cmd("I have recieved x")
 
 def main(args=None):

@@ -28,6 +28,7 @@ setup(
             'serial_server = ros2_serial_interface.serial_server:main',
             'terminal_key_pub = ros2_serial_interface.terminal_key_pub:main',
         	'virtual_serial_client = ros2_serial_interface.virtual_serial_client:main',
+            'virtual_serial_setup = ros2_serial_interface.virtual_serial_setup:main',
             'virtual_serial_server = ros2_serial_interface.virtual_serial_server:main'
         ],
     },
