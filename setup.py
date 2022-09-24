@@ -19,14 +19,17 @@ setup(
     maintainer='andyp',
     maintainer_email='andy.ponce@outlook.com',
     description='Ros2 Serial Interface',
-    license='Apache 2.0',
+    license='MIT',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        	'serial_controller = ros2_serial_interface.serial_controller:main',
-        	'timer_publisher = ros2_serial_interface.timer_publisher:main',
-        	'keyboard_publisher = ros2_serial_interface.keyboard_publisher:main'
-        	
+        	'predef_timed_pub = ros2_serial_interface.predef_timed_pub:main',
+        	'pynput_key_pub = ros2_serial_interface.pynput_key_pub:main',
+            'serial_server = ros2_serial_interface.serial_server:main',
+            'terminal_key_pub = ros2_serial_interface.terminal_key_pub:main',
+        	'virtual_serial_client = ros2_serial_interface.virtual_serial_client:main',
+            'virtual_serial_setup = ros2_serial_interface.virtual_serial_setup:main',
+            'virtual_serial_server = ros2_serial_interface.virtual_serial_server:main'
         ],
     },
 )

@@ -5,7 +5,7 @@
   <version>0.0.0</version>
   <description>Ros2 Serial Interface</description>
   <maintainer email="andy.ponce@outlook.com">andyp</maintainer>
-  <license>Apache 2.0</license>
+  <license>MIT</license>
   
   <!--TODO: Verify these 5 dependencies actually work as intended in this file. Also make sure they are valid through some testing-->
   <!--Beginning of added dependencies:-->

@@ -1,3 +1,4 @@
+#This keyboard publisher gets input using the pynput library
 import rclpy
 from rclpy.node import Node
 from pynput.keyboard import Key, Listener, KeyCode
@@ -10,22 +11,18 @@ def run_publisher(node):
             msg = Twist()
             if isinstance(key, KeyCode): #lets us know if we can safely use key.char
                 if key.char == 'w':
-                    #msg.data = 'Up key pressed'
                     msg.linear.x = 1.0
                     node.publisher_.publish(msg)
                     return False
                 elif key.char == 's':
-                    #msg.data = 'Down key pressed'
                     msg.linear.x = -1.0
                     node.publisher_.publish(msg)
                     return False
                 elif key.char == 'a':
-                    #msg.data = 'Left key pressed'
                     msg.angular.z = 1.0
                     node.publisher_.publish(msg)
                     return False
                 elif key.char == 'd':
-                    #msg.data = 'Right key pressed'
                     msg.angular.z = -1.0
                     node.publisher_.publish(msg)
                     return False
