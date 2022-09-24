@@ -40,7 +40,7 @@ This test essentially sets up two mock devices:
 
 - Like serial_server.py, this subscribes to the wheel_instructions_topic topic
 - Unlike serial_server.py, the port trasmitted to and the port received from are different
-- This transmits data to a serial port called '/dev/ttyS0' 
+- This transmits data to a serial port called '/dev/ttyS0'
 - The data sent to 'dev/ttyS0' gets forwarded to '/dev/ttyS1' using the socat utility
 - This recieves data from a serial port called '/dev/ttyS3'
 - The data recieved by '/dev/ttyS3' was forwarded from another serial port called '/dev/ttyS2'
